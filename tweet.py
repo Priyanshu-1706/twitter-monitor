@@ -1,27 +1,19 @@
 import requests
 import json
 import time
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
-# ================================
-# YAHAN APNI DETAILS DALO
-# ================================
 BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAM9K%2BQEAAAAA5mR2g2yT8Bysl%2FPmoALOLuku0ec%3DZwzxPAHGuohCm0DZQd26SxvA1ATe3t6ccXbUObzpaxOnDukGIy"
 WEBHOOK_URL = "https://priyanshuagr-123.app.n8n.cloud/webhook/4b57f212-dcdd-4850-acde-16c41b668236"
 
-# ================================
-# YAHAN APNE 30 ACCOUNTS DALO
-# ================================
 ACCOUNTS = [
     "elonmusk",
     "narendramodi",
-    "satyanadella",
-    "piyushyadav44"
-    # baaki accounts yahan add karo
+    "piyushyadav44",
+    # baaki accounts
 ]
 
-# ================================
-# YE MAT CHHEDO
-# ================================
 STREAM_URL = "https://api.twitter.com/2/tweets/search/stream"
 RULES_URL = "https://api.twitter.com/2/tweets/search/stream/rules"
 
@@ -30,17 +22,27 @@ HEADERS = {
     "Content-Type": "application/json"
 }
 
+# == RENDER KE LIYE DUMMY SERVER ==
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Twitter Monitor Running!")
+    def log_message(self, format, *args):
+        pass
+
+def run_server():
+    server = HTTPServer(("0.0.0.0", 8080), Handler)
+    server.serve_forever()
+
 def delete_old_rules():
     try:
         response = requests.get(RULES_URL, headers=HEADERS)
         rules = response.json().get("data", [])
         if rules:
             ids = [rule["id"] for rule in rules]
-            requests.post(
-                RULES_URL,
-                headers=HEADERS,
-                json={"delete": {"ids": ids}}
-            )
+            requests.post(RULES_URL, headers=HEADERS,
+                json={"delete": {"ids": ids}})
         print("✅ Purane rules delete ho gaye")
     except Exception as e:
         print("❌ Error:", e)
@@ -48,11 +50,8 @@ def delete_old_rules():
 def add_rules():
     try:
         rule = " OR ".join([f"from:{acc}" for acc in ACCOUNTS])
-        response = requests.post(
-            RULES_URL,
-            headers=HEADERS,
-            json={"add": [{"value": rule}]}
-        )
+        requests.post(RULES_URL, headers=HEADERS,
+            json={"add": [{"value": rule}]})
         print("✅ Accounts add ho gaye")
     except Exception as e:
         print("❌ Error:", e)
@@ -87,9 +86,7 @@ def start_stream():
                         name = tweet["includes"]["users"][0]["name"]
                         text = tweet["data"]["text"]
                         tweet_id = tweet["data"]["id"]
-
                         print(f"🚨 @{username}: {text}")
-
                         send_to_webhook({
                             "username": username,
                             "name": name,
@@ -105,6 +102,11 @@ def start_stream():
 
 if __name__ == "__main__":
     print("🚀 Twitter Monitor Shuru!")
+    # Server alag thread mein chalao
+    t = threading.Thread(target=run_server)
+    t.daemon = True
+    t.start()
+    # Stream shuru karo
     delete_old_rules()
     add_rules()
     start_stream()
