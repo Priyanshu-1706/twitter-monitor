@@ -8,10 +8,37 @@ BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAM9K%2BQEAAAAA5mR2g2yT8Bysl%2FPmoALOLuku0ec%
 WEBHOOK_URL = "https://priyanshuagr-123.app.n8n.cloud/webhook/4b57f212-dcdd-4850-acde-16c41b668236"
 
 ACCOUNTS = [
-    "elonmusk",
     "narendramodi",
-    "piyushyadav44",
-    # baaki accounts
+    "AmitShah",
+    "rajnathsingh",
+    "PiyushGoyal",
+    "rsprasad",
+    "smritiirani",
+    "nsitharaman",
+    "DrSJaishankar",
+    "nitin_gadkari",
+    "ianuragthakur",
+    "RahulGandhi",
+    "priyankagandhi",
+    "OfficeOfRG",
+    "ArvindKejriwal",
+    "MamataOfficial",
+    "uddhavthackeray",
+    "hd_kumaraswamy",
+    "yadavakhilesh",
+    "SiddaramaiahINC",
+    "shahfaesal",
+    "vijai_singapuram",
+    "Sanjay_Dixit",
+    "swamy39",
+    "sardanarohit",
+    "RubikaCLiaquat",
+    "anjanaomkashyap",
+    "navikakumar",
+    "bdutt",
+    "sardesairajdeep",
+    "ShekharGupta",
+    "PriyanshuAgr17",
 ]
 
 STREAM_URL = "https://api.twitter.com/2/tweets/search/stream"
